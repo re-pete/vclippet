@@ -14,15 +14,9 @@ fn main() {
     println!("Clip created: {} to {} with maybe a name of: {}", clip.start, clip.end, clip.name.as_deref().unwrap_or("output"));
 
     let mut source : PathBuf = PathBuf::new();
-    source.push("/");
-    source.push("home");
-    source.push("peter");
-    source.push("coolfile.mp4");
+    source.push("./test_input.mp4");
     let mut output : PathBuf = PathBuf::new();
-    output.push("/");
-    output.push("home/");
-    output.push("peter/");
-    output.push("cool/er/file.mp4");
+    output.push("./test_output.mp4");
 
     let ffmpeg = ffmpeg::extract_clip(&clip,&source,&output);
     match ffmpeg  {
