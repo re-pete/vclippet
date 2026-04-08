@@ -1,7 +1,6 @@
 use crate::clip::Clip;
 use std::path::PathBuf;
 use std::process::Command;
-use crate::{println, printlns};
 
 // let args = &[
 //     "-ss", "00:00:20",
@@ -15,9 +14,9 @@ use crate::{println, printlns};
 fn get_commandline_args(clip: &Clip, source: &PathBuf, output: &PathBuf) -> Vec<String> {
     let mut vec : Vec<String> = Vec::new();
     vec.push("-ss".to_string());
-    vec.push(clip.start.to_string());
+    vec.push(get_timestring_from_seconds(clip.start));
     vec.push("-to".to_string());
-    vec.push(clip.end.to_string());
+    vec.push(get_timestring_from_seconds(clip.end));
     vec.push("-i".to_string());
     vec.push(source.to_string_lossy().into_owned());
     vec.push("-c".to_string());
@@ -37,9 +36,7 @@ fn get_timestring_from_seconds(seconds: u32) -> String {
 
 pub fn extract_clip(clip: &Clip, source: &PathBuf, output: &PathBuf) -> Result<(), String> {
     let vec = get_commandline_args(clip, source, output);
-    for value in vec {
-        printlns(&value);
-    }
-    return Err("not implemented".to_string());
+    println!("In extract_clip - I should do something here");
+    return Err(format!("ffmpeg {}",vec.join(" ")));
 }
 

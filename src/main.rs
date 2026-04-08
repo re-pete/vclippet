@@ -6,85 +6,33 @@ mod session;
 
 use clip::Clip;
 use std::path::PathBuf;
-use std::io::{self, Write};
-use std::process::Command;
 
 fn main() {
-    let result = Clip::new(10,30,None);
-    let clip: Clip;
-    match result {
-        Ok(c) => {
-            print("Clip created: "); prints(&c.start.to_string()); print(" to "); prints(&c.end.to_string());println("");
-            clip = c;
-        }
-        Err(e) => {
-            print("Error: "); prints(&e);println("");
-            return;
-        }
-    };
+    let mut clip: Clip = Clip::new(10,30,None).unwrap();
+    println!("Clip created: {} to {} with maybe a name of: {}", clip.start, clip.end, clip.name.as_deref().unwrap_or("output"));
+    clip.name = Some("clipname".to_string());
+    println!("Clip created: {} to {} with maybe a name of: {}", clip.start, clip.end, clip.name.as_deref().unwrap_or("output"));
 
     let mut source : PathBuf = PathBuf::new();
     source.push("/");
-    source.push("home/peter");
+    source.push("home");
+    source.push("peter");
+    source.push("coolfile.mp4");
     let mut output : PathBuf = PathBuf::new();
     output.push("/");
-    output.push("home/peter");
-
-
-    let a = if 1 == 2 { 1 } else { 2};
+    output.push("home/");
+    output.push("peter/");
+    output.push("cool/er/file.mp4");
 
     let ffmpeg = ffmpeg::extract_clip(&clip,&source,&output);
-    ls2(&["/home","-a"]);
-}
-
-fn print(string: &str) {
-    prints(&string.to_string());
-}
-
-fn println(string: &str) {
-    print(&string);
-    print("\n");
-}
-
-fn prints(string: &String) {
-    let stdout = io::stdout();
-    let mut handle = stdout.lock();
-    handle.write_all(string.as_bytes()).unwrap();
-    handle.flush().unwrap();
-}
-
-fn printlns(string: &String) {
-    prints(string);
-    print("\n");
-}
-
-pub fn ls(args: &[&str]) {
-    let output = Command::new("ls")
-        .args(args)
-        .output();
-
-    match output {
-        Ok(ok) => {
-            let okvalue = String::from_utf8(ok.stdout);
-            match okvalue {
-                Ok(okvalueok) => {
-                    printlns(&okvalueok);
-                }
-                Err(err) => {
-                    printlns(&err.to_string());
-                }
-            }
+    match ffmpeg  {
+        Ok(()) => {
+            println!("This shouldn't happen right now");
         }
-        Err(err) => {
-            printlns(&err.to_string());
+        Err(str) => {
+            println!("{}",str);
         }
     }
-}
-
-pub fn ls2(args: &[&str]) -> Result<String, String> {
-    let output = Command::new("ls")
-        .args(args)
-        .output()
-        .unwrap();
-    return Ok(String::from_utf8(output.stdout).unwrap());
+    
+    let clip2: Clip = Clip::new(30,10,Some("this shoul cause a panic".to_string())).unwrap();
 }
