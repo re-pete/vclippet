@@ -15,7 +15,7 @@ impl Session {
     pub fn with_defaults() -> Session {
         Session { source_file: None, clips: Vec::new(), session_name: None, concat: false}
     }
-    
+
     pub fn add_clip(&mut self, clip:Clip) {
         self.clips.push(clip)
     }

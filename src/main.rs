@@ -15,9 +15,9 @@ use std::path::PathBuf;
 
 fn main() {
     let mut clip: Clip = Clip::new(10,30,None).unwrap();
-    println!("Clip created: {} to {} with maybe a name of: {}", clip.start, clip.end, clip.name.as_deref().unwrap_or("output"));
-    clip.name = Some("clipname".to_string());
-    println!("Clip created: {} to {} with maybe a name of: {}", clip.start, clip.end, clip.name.as_deref().unwrap_or("output"));
+    println!("Clip created: {} to {} with maybe a name of: {}", clip.start, clip.end, clip.label.as_deref().unwrap_or("output"));
+    clip.label = Some("clipname".to_string());
+    println!("Clip created: {} to {} with maybe a name of: {}", clip.start, clip.end, clip.label.as_deref().unwrap_or("output"));
 
     let mut source : PathBuf = PathBuf::new();
     source.push("./test_input.mp4");

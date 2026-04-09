@@ -1,7 +1,9 @@
+pub const DEFAULT_CLIP_LABEL: &str = "output";
+
 pub struct Clip {
   pub start: u32,
   pub end: u32,
-  pub name: Option<String>,
+  pub label: Option<String>,
 }
 
 impl Clip {
@@ -9,7 +11,11 @@ impl Clip {
         if end <= start {
             return Err(String::from("end must be greater than start"));
         }
-        Ok(  Clip { start, end, name })
+        Ok(  Clip { start, end, label: name })
+    }
+
+    pub fn label(&self) -> &str {
+        return self.label.as_deref().unwrap_or(DEFAULT_CLIP_LABEL);
     }
 }
 

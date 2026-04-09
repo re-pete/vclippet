@@ -1,4 +1,5 @@
 use crate::clip::Clip;
+use crate::clip::DEFAULT_CLIP_LABEL;
 use std::path::Path;
 use std::process::Command;
 
@@ -28,36 +29,33 @@ fn get_timestring_from_seconds(seconds: u32) -> String {
     return format!("{:02}:{:02}:{:02}", hours, minutes, secs);
 }
 
-pub fn extract_clip(clip: &Clip, source_file: &Path, output_file: &Path) -> Result<(), String> {
+fn get_filename(clip: &Clip) -> &str {
+    // Implement this
+    return "";
+}
+
+pub fn extract_clip(clip: &Clip, source_file: &Path, output_directory: &Path) -> Result<(), String> {
 
     // Make sure input exists
     if !source_file.is_file() {
         return Err("source_file file doesn't exist".to_string());
     }
 
-    // Make sure output_file directory exists
-    // Rust sucks, so verbose, because we can't use ? here
-    let output_parent_dir_option = output_file.parent();
-    let output_parent_dir : &Path;
-    match output_parent_dir_option {
-        Some(some) => {
-            output_parent_dir = some;
-        }
-        None => {
-            return Err("You must have passed in the root directory instead of a file".to_string());
-        }
-    }
-
-    if !output_parent_dir.is_dir() {
+    println!("{}",clip.label());
+    // Make sure output_directory directory exists
+    if !output_directory.is_dir() {
         return Err("Output directory must exist".to_string());
     }
+
+    // Check if output file exists
+    // let output_file = output_directory + get_filename(&clip);
  
-    if output_file.is_file() {
+    if output_directory.is_file() {
         return Err("We'll handle file collisions later".to_string());
     }
 
 
-    let vec = get_commandline_args(clip, source_file, output_file);
+    let vec = get_commandline_args(clip, source_file, output_directory);
     let cmd_output = Command::new("ffmpeg").args(&vec).output().unwrap();
     // At this point it runs, should figure out how to get the output of the command
     // to the console for now
