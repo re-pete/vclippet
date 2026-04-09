@@ -1,5 +1,4 @@
 use crate::clip::Clip;
-use crate::clip::DEFAULT_CLIP_LABEL;
 use std::path::Path;
 use std::process::Command;
 
