@@ -3,7 +3,7 @@ pub const DEFAULT_CLIP_LABEL: &str = "output";
 pub struct Clip {
   pub start: u32,
   pub end: u32,
-  pub label: Option<String>,
+  label: Option<String>,
 }
 
 impl Clip {
