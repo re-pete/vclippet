@@ -1,11 +1,11 @@
 use crate::clip::Clip;
-use std::path::PathBuf;
+use std::path::Path;
 use std::process::Command;
 
 const CHECK_IF_FILE_IS_VALID : &str = "ffmpeg -v error -sseof -60 -i {} -f null -";
 const EXTRACT_CLIP : &str = "-ss {} -to {} -i {} -c copy -avoid_negative_ts make_zero {}";
 
-fn get_commandline_args(clip: &Clip, source_file: &PathBuf, output_file: &PathBuf) -> Vec<String> {
+fn get_commandline_args(clip: &Clip, source_file: &Path, output_file: &Path) -> Vec<String> {
     let mut vec : Vec<String> = Vec::new();
     vec.push("-ss".to_string());
     vec.push(get_timestring_from_seconds(clip.start));
@@ -28,7 +28,7 @@ fn get_timestring_from_seconds(seconds: u32) -> String {
     return format!("{:02}:{:02}:{:02}", hours, minutes, secs);
 }
 
-pub fn extract_clip(clip: &Clip, source_file: &PathBuf, output_file: &PathBuf) -> Result<(), String> {
+pub fn extract_clip(clip: &Clip, source_file: &Path, output_file: &Path) -> Result<(), String> {
 
     // Make sure input exists
     if !source_file.is_file() {
@@ -38,10 +38,10 @@ pub fn extract_clip(clip: &Clip, source_file: &PathBuf, output_file: &PathBuf) -
     // Make sure output_file directory exists
     // Rust sucks, so verbose, because we can't use ? here
     let output_parent_dir_option = output_file.parent();
-    let output_parent_dir : PathBuf;
+    let output_parent_dir : &Path;
     match output_parent_dir_option {
         Some(some) => {
-            output_parent_dir = some.to_path_buf();
+            output_parent_dir = some;
         }
         None => {
             return Err("You must have passed in the root directory instead of a file".to_string());
