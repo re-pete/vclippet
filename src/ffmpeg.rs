@@ -31,7 +31,7 @@ fn get_timestring_from_seconds(seconds: u32) -> String {
 pub fn extract_clip(clip: &Clip, source_file: &PathBuf, output_file: &PathBuf) -> Result<(), String> {
 
     // Make sure input exists
-    if source_file.is_file() != true {
+    if !source_file.is_file() {
         return Err("source_file file doesn't exist".to_string());
     }
 
@@ -48,11 +48,11 @@ pub fn extract_clip(clip: &Clip, source_file: &PathBuf, output_file: &PathBuf) -
         }
     }
 
-    if output_parent_dir.is_dir() != true {
+    if !output_parent_dir.is_dir() {
         return Err("Output directory must exist".to_string());
     }
  
-    if output_file.is_file() == true {
+    if output_file.is_file() {
         return Err("We'll handle file collisions later".to_string());
     }
 

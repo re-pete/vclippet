@@ -1,6 +1,5 @@
 #![allow(clippy::needless_return)]
 #![allow(clippy::vec_init_then_push)]
-#![allow(clippy::bool_comparison)]
 #![allow(clippy::needless_late_init)]
 #![allow(unused_variables)]
 #![allow(dead_code)]
@@ -34,6 +33,6 @@ fn main() {
             println!("{}",str);
         }
     }
-    
+ 
     let clip2: Clip = Clip::new(30,10,Some("this shoul cause a panic".to_string())).unwrap();
 }
