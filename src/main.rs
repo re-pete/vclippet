@@ -10,26 +10,16 @@ mod clip;
 mod ffmpeg;
 mod session;
 
-use clip::Clip;
-use std::path::PathBuf;
-
 fn main() {
-    let mut clip: Clip = Clip::new(10,30,None).unwrap();
-    clip.label = Some("clipname".to_string());
-
-    let mut source : PathBuf = PathBuf::new();
-    source.push("./test_input.mp4");
-    let mut output : PathBuf = PathBuf::new();
-    output.push("./test_output.mp4");
-
-    let ffmpeg = ffmpeg::extract_clip(&clip,&source,&output);
-    match ffmpeg  {
-        Ok(()) => {
-            println!("This shouldn't happen right now");
-        }
-        Err(str) => {
-            println!("{}",str);
+    // If no args, launch TUI mode
+    if std::env::args().count() == 1 {
+        println!("This is where I would launch a TUI");
+        println!("IF I HAD ONE!");
+        return;
+    } else {
+        match crate::cli::run() {
+            Ok(()) => println!("We are in main, cli.run returned OK"),
+            Err(str) => println!("We are in main, cli.run returned an error: {}",str)
         }
     }
- 
 }
