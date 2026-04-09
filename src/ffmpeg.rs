@@ -51,7 +51,7 @@ pub fn extract_clip(clip: &Clip, source_file: &PathBuf, output_file: &PathBuf) -
     if output_parent_dir.is_dir() != true {
         return Err("Output directory must exist".to_string());
     }
-    
+ 
     if output_file.is_file() == true {
         return Err("We'll handle file collisions later".to_string());
     }

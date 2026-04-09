@@ -1,3 +1,10 @@
+#![allow(clippy::needless_return)]
+#![allow(clippy::vec_init_then_push)]
+#![allow(clippy::bool_comparison)]
+#![allow(clippy::needless_late_init)]
+#![allow(unused_variables)]
+#![allow(dead_code)]
+
 mod cli;
 mod tui;
 mod clip;
