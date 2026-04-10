@@ -22,18 +22,18 @@ struct Arguments {
     output_path : PathBuf, // Output directory
 }
 
-pub fn run() -> Result<(),String> {
+pub fn run() -> Result<(),Box<dyn std::error::Error>> {
     let args = Arguments::parse();
 
     // Make sure input exists
     if !args.input_file.is_file() {
-        return Err("Gotta have an input file".to_string());
+        return Err("Gotta have an input file".into());
         // TODO
     }
 
     // Make sure output dir exists
     if !args.output_path.is_dir() {
-        return Err("gotta have valid output dir".to_string());
+        return Err("gotta have valid output dir".into());
         // TODO
     }
 
