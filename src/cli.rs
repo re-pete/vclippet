@@ -42,12 +42,18 @@ pub fn run() -> Result<(),Box<dyn std::error::Error>> {
         // TODO ?
     }
 
-    let start : u32 = args.start.parse().expect("start needs to be an integer for now");
-    let end : u32 = args.end.parse().expect("end needs to be an integer for now");
+    let start : u32 = args.start.parse()?;
+    let end : u32 = args.end.parse()?;
     // let label : &str = args.label.unwrap().clone();
 
     let clip : Clip = Clip::new(start, end, args.label)?;
-    let file_ext : &str = args.input_file.extension().unwrap().to_str().unwrap();
+    let file_ext : &str = match args.input_file.extension() {
+        None => return Err("For now, we need file extension - we aren't letting ffmpeg dynamically discover it".into()),
+        Some(ext) => match ext.to_str() {
+            Some(s) => s,
+            None => return Err("File extension must be valid UTF-8, no funny business".into())
+        }
+    };
 
     let output_file_name = format!("{}_{}-{}.{}", clip.label(), start, end, file_ext);
     let mut output_file = PathBuf::from(args.output_path);
