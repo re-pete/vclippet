@@ -1,8 +1,8 @@
-use std::path::PathBuf;
+use std::{path::PathBuf};
 
 use clap::Parser;
 
-use crate::clip::Clip;
+use crate::{clip::Clip, session::Session};
 
 
 #[derive(Parser,Debug)]
@@ -59,5 +59,9 @@ pub fn run() -> Result<(),Box<dyn std::error::Error>> {
     let mut output_file = PathBuf::from(args.output_path);
     output_file.push(output_file_name);
 
-    return crate::ffmpeg::extract_clip(&clip, &args.input_file, &output_file, args.overwrite);
+    let mut vec = Vec::new();
+    vec.push(clip);
+    let session = Session::new(Some(args.input_file), Some(output_file), vec, None, false);
+    return session.extract_clips();
+
 }
