@@ -55,13 +55,9 @@ pub fn run() -> Result<(),Box<dyn std::error::Error>> {
         }
     };
 
-    let output_file_name = format!("{}_{}-{}.{}", clip.label(), start, end, file_ext);
-    let mut output_file = PathBuf::from(args.output_path);
-    output_file.push(output_file_name);
-
     let mut vec = Vec::new();
     vec.push(clip);
-    let session = Session::new(Some(args.input_file), Some(output_file), vec, None, false);
-    return session.extract_clips();
+    let session = Session::new(Some(args.input_file), Some(args.output_path), vec, None, false);
+    return session.extract_clips(args.overwrite);
 
 }
