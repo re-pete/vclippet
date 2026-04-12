@@ -1,14 +1,14 @@
 #![allow(clippy::needless_return)]
 #![allow(clippy::vec_init_then_push)]
-#![allow(clippy::needless_late_init)]
-#![allow(unused_variables)]
-#![allow(dead_code)]
+// #![allow(clippy::needless_late_init)]
+// #![allow(unused_variables)]
+// #![allow(dead_code)]
 
 mod cli;
-mod tui;
 mod clip;
 mod ffmpeg;
 mod session;
+mod tui;
 
 fn main() {
     // If no args, launch TUI mode
@@ -19,7 +19,7 @@ fn main() {
     } else {
         match crate::cli::run() {
             Ok(()) => println!("We are in main, cli.run returned OK"),
-            Err(str) => println!("We are in main, cli.run returned an error: {}",str)
+            Err(str) => println!("We are in main, cli.run returned an error: {}", str),
         }
     }
 }
