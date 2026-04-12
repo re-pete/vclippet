@@ -1,15 +1,15 @@
 use crate::clip::Clip;
-use std::{error::Error, path::PathBuf};
+use std::{error::Error, path::{Path, PathBuf}};
 
 pub struct Session {
     source_file: Option<PathBuf>,
-    output_path: Option<PathBuf>,
-    clips: Vec<Clip>,
-    session_name: Option<String>,
-    concat: bool,
+    pub output_path: Option<PathBuf>,
+    pub clips: Vec<Clip>,
+    pub session_name: Option<String>,
+    pub concat: bool,
 }
 
-impl Session {
+impl Session { 
     pub fn new(source_file: Option<PathBuf>, output_path: Option<PathBuf>, clips: Vec<Clip>, session_name: Option<String>, concat: bool) -> Session {
         Session { source_file, output_path, clips, session_name, concat }
     }
@@ -21,8 +21,23 @@ impl Session {
         self.clips.push(clip)
     }
 
+    pub fn set_source_file(&mut self, path: PathBuf) -> Result<(), Box<dyn Error>> {
+        // Input file must exist
+        if !path.is_file() {
+            return Err("Gotta have an input file".into());
+        }
+        // The logic here is a little weird but - get_file_ext_from_path returns an error if there isn't a valid file extension
+        // So just calling it and having it not fail is enough validation Maybe eventually we pick from a whitelist of video types
+        let _ = get_file_ext_from_path(path.as_ref());
+        // At this point, file exists and has some kind of file extension
+        self.source_file = Some(path);
+
+        return Ok(());
+
+    }
+
     fn get_file_ext(&self) -> Result<String, Box<dyn Error>> {
-        let source_file = self.source_file.as_ref().ok_or("source file must be set before calling extract")?;
+        let source_file = self.source_file.as_ref().ok_or("source file must be set before accessing file ext")?;
         return match source_file.extension() {
             None => Err("For now, we need file extension - we aren't letting ffmpeg dynamically discover it".into()),
             Some(ext) => match ext.to_str() {
@@ -70,4 +85,14 @@ impl Session {
         return Ok(());
     }
     
+}
+
+fn get_file_ext_from_path(path: &Path) -> Result<String, Box<dyn Error>> {
+    return match path.extension() {
+        None => Err("need a file extension".into()),
+        Some(ext) => match ext.to_str() {
+            Some(s) => Ok(String::from(s)),
+            None => Err("File extension must be valid UTF-8, no funny business".into())
+        }
+    };
 }

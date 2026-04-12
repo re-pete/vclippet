@@ -44,20 +44,11 @@ pub fn run() -> Result<(),Box<dyn std::error::Error>> {
 
     let start : u32 = args.start.parse()?;
     let end : u32 = args.end.parse()?;
-    // let label : &str = args.label.unwrap().clone();
+    let clip: Clip = Clip::new(start, end, args.label)?;
 
-    let clip : Clip = Clip::new(start, end, args.label)?;
-    let file_ext : &str = match args.input_file.extension() {
-        None => return Err("For now, we need file extension - we aren't letting ffmpeg dynamically discover it".into()),
-        Some(ext) => match ext.to_str() {
-            Some(s) => s,
-            None => return Err("File extension must be valid UTF-8, no funny business".into())
-        }
-    };
-
-    let mut vec = Vec::new();
-    vec.push(clip);
-    let session = Session::new(Some(args.input_file), Some(args.output_path), vec, None, false);
+    let mut session = Session::with_defaults();
+    session.add_clip(clip);
+    session.set_source_file(args.input_file)?;
+    session.output_path = Some(args.output_path);
     return session.extract_clips(args.overwrite);
-
 }
