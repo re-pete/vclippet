@@ -1,34 +1,33 @@
-use std::{path::PathBuf};
+use std::path::PathBuf;
 
 use clap::Parser;
 
 use crate::{clip::Clip, session::Session};
 
-
-#[derive(Parser,Debug)]
+#[derive(Parser, Debug)]
 #[command(version)] // Could add 'about' if I write something in Cargo.toml
 struct Arguments {
     /// force overwriting of an existing file
-    #[arg(long,default_value_t=false)]
-    overwrite : bool, 
+    #[arg(long, default_value_t = false)]
+    overwrite: bool,
     /// Clip start time
     #[arg(long)]
-    start : String, 
+    start: String,
     /// Clip end time
     #[arg(long)]
-    end : String, 
+    end: String,
     /// Input file
     #[arg()]
-    input_file : PathBuf, 
+    input_file: PathBuf,
     /// Label for the clip
     #[arg(long)]
-    label : Option<String>, 
+    label: Option<String>,
     /// Output directory
     #[arg(long)]
-    output_path : PathBuf, 
+    output_path: PathBuf,
 }
 
-pub fn run() -> Result<(),Box<dyn std::error::Error>> {
+pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     let args = Arguments::parse();
 
     // Make sure input exists
@@ -48,8 +47,8 @@ pub fn run() -> Result<(),Box<dyn std::error::Error>> {
         // TODO ?
     }
 
-    let start : u32 = args.start.parse()?;
-    let end : u32 = args.end.parse()?;
+    let start: u32 = args.start.parse()?;
+    let end: u32 = args.end.parse()?;
     let clip: Clip = Clip::new(start, end, args.label)?;
 
     let mut session = Session::default();
