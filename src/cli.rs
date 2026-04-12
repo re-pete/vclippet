@@ -8,18 +8,24 @@ use crate::{clip::Clip, session::Session};
 #[derive(Parser,Debug)]
 #[command(version)] // Could add 'about' if I write something in Cargo.toml
 struct Arguments {
+    /// force overwriting of an existing file
     #[arg(long,default_value_t=false)]
-    overwrite : bool, // Whether or not to overwrite the output file, if it exists
+    overwrite : bool, 
+    /// Clip start time
     #[arg(long)]
-    start : String, // Clip start time
+    start : String, 
+    /// Clip end time
     #[arg(long)]
-    end : String, // Clip end time
+    end : String, 
+    /// Input file
     #[arg()]
-    input_file : PathBuf, // Input file
+    input_file : PathBuf, 
+    /// Label for the clip
     #[arg(long)]
-    label : Option<String>, // Label for the clip
+    label : Option<String>, 
+    /// Output directory
     #[arg(long)]
-    output_path : PathBuf, // Output directory
+    output_path : PathBuf, 
 }
 
 pub fn run() -> Result<(),Box<dyn std::error::Error>> {
@@ -46,7 +52,7 @@ pub fn run() -> Result<(),Box<dyn std::error::Error>> {
     let end : u32 = args.end.parse()?;
     let clip: Clip = Clip::new(start, end, args.label)?;
 
-    let mut session = Session::with_defaults();
+    let mut session = Session::default();
     session.add_clip(clip);
     session.set_source_file(args.input_file)?;
     session.output_path = Some(args.output_path);

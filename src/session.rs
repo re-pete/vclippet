@@ -1,6 +1,7 @@
 use crate::clip::Clip;
 use std::{error::Error, path::{Path, PathBuf}};
 
+#[derive(Default)]
 pub struct Session {
     source_file: Option<PathBuf>,
     pub output_path: Option<PathBuf>,
@@ -12,9 +13,6 @@ pub struct Session {
 impl Session { 
     pub fn new(source_file: Option<PathBuf>, output_path: Option<PathBuf>, clips: Vec<Clip>, session_name: Option<String>, concat: bool) -> Session {
         Session { source_file, output_path, clips, session_name, concat }
-    }
-    pub fn with_defaults() -> Session {
-        Session { source_file: None, output_path: None, clips: Vec::new(), session_name: None, concat: false}
     }
 
     pub fn add_clip(&mut self, clip:Clip) {
@@ -28,7 +26,7 @@ impl Session {
         }
         // The logic here is a little weird but - get_file_ext_from_path returns an error if there isn't a valid file extension
         // So just calling it and having it not fail is enough validation Maybe eventually we pick from a whitelist of video types
-        let _ = get_file_ext_from_path(path.as_ref());
+        get_file_ext_from_path(path.as_ref())?;
         // At this point, file exists and has some kind of file extension
         self.source_file = Some(path);
 
@@ -37,24 +35,19 @@ impl Session {
     }
 
     fn get_file_ext(&self) -> Result<String, Box<dyn Error>> {
-        let source_file = self.source_file.as_ref().ok_or("source file must be set before accessing file ext")?;
-        return match source_file.extension() {
-            None => Err("For now, we need file extension - we aren't letting ffmpeg dynamically discover it".into()),
-            Some(ext) => match ext.to_str() {
-                Some(s) => Ok(String::from(s)),
-                None => Err("File extension must be valid UTF-8, no funny business".into())
-            }
-        }; 
+        let source_file = self
+            .source_file
+            .as_ref()
+            .ok_or("source file must be set before accessing file ext")?;
+
+        get_file_ext_from_path(source_file)
     }
 
     fn get_output_filename(&self, clip: &Clip) -> Result<String, Box<dyn Error>> {
 
-        
         // If the session name is set, it overrides individual labels
-        let file_label : String = match &self.session_name {
-            Some(str) => str.clone(),
-            None => String::from(clip.label())
-        };
+        let file_label = self.session_name.as_deref().unwrap_or_else(|| clip.label());
+        
 
         // If we are concatenating a bunch of clips, we don't worry about timestamps
         let clip_str = if self.concat {
