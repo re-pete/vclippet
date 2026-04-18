@@ -4,10 +4,6 @@ use crossterm::event::{self, KeyCode, KeyEvent, KeyModifiers, read};
 use ratatui::{Frame, layout::{Constraint, Direction, Layout, Rect}, symbols::border, text::Line, widgets::{Block, Borders, Paragraph}};
 
 const QUIT_KEY: KeyEvent = KeyEvent::new(KeyCode::Char('q'),KeyModifiers::CONTROL);
-const zzz1_KEY: KeyCode = KeyCode::Char('1');
-const zzz2_KEY: KeyCode = KeyCode::Char('2');
-const zzz3_KEY: KeyCode = KeyCode::Char('3');
-const zzz4_KEY: KeyCode = KeyCode::Char('4');
 
 struct ViewState {
     selected_panel: u8,
@@ -92,10 +88,9 @@ pub fn run() -> Result<(), Box<dyn Error>> {
                     return Ok(());
                 }
                 match keypress_evt.code {
-                    zzz1_KEY => vstate.selected_panel = keypress_evt.code.as_char().unwrap().to_digit(10).unwrap() as u8 - 1,
-                    zzz2_KEY => vstate.selected_panel = keypress_evt.code.as_char().unwrap().to_digit(10).unwrap() as u8 - 1,
-                    zzz3_KEY => vstate.selected_panel = keypress_evt.code.as_char().unwrap().to_digit(10).unwrap() as u8 - 1,
-                    zzz4_KEY => vstate.selected_panel = keypress_evt.code.as_char().unwrap().to_digit(10).unwrap() as u8 - 1,
+                    // This syntax makes no sense and I hate it. Oh and it's non inclusive for some
+                    // reason too
+                    KeyCode::Char('1'..='4') => vstate.selected_panel = keypress_evt.code.as_char().unwrap().to_digit(10).unwrap() as u8 - 1,
                     KeyCode::Char(c) => vstate.pressed_key = Some(keypress_evt.code),
                     _  => {}
                 }
