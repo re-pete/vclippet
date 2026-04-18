@@ -13,8 +13,7 @@ mod tui;
 fn main() {
     // If no args, launch TUI mode
     if std::env::args().count() == 1 {
-        println!("This is where I would launch a TUI");
-        println!("IF I HAD ONE!");
+        let _ = tui::run();
         return;
     } else {
         match crate::cli::run() {
