@@ -4,10 +4,10 @@ use crossterm::event::{self, KeyCode, KeyEvent, KeyModifiers, read};
 use ratatui::{Frame, layout::{Constraint, Direction, Layout, Rect}, symbols::border, text::Line, widgets::{Block, Borders, Paragraph}};
 
 const QUIT_KEY: KeyEvent = KeyEvent::new(KeyCode::Char('q'),KeyModifiers::CONTROL);
-const zzz1_KEY: KeyEvent = KeyEvent::new(KeyCode::Char('1'),KeyModifiers::NONE);
-const zzz2_KEY: KeyEvent = KeyEvent::new(KeyCode::Char('2'),KeyModifiers::NONE);
-const zzz3_KEY: KeyEvent = KeyEvent::new(KeyCode::Char('3'),KeyModifiers::NONE);
-const zzz4_KEY: KeyEvent = KeyEvent::new(KeyCode::Char('4'),KeyModifiers::NONE);
+const zzz1_KEY: KeyCode = KeyCode::Char('1');
+const zzz2_KEY: KeyCode = KeyCode::Char('2');
+const zzz3_KEY: KeyCode = KeyCode::Char('3');
+const zzz4_KEY: KeyCode = KeyCode::Char('4');
 
 struct ViewState {
     selected_panel: u8,
@@ -88,17 +88,15 @@ pub fn run() -> Result<(), Box<dyn Error>> {
         // Rust syntax is disgusting
         match read() {
             Ok(event::Event::Key(keypress_evt)) => {
-                match keypress_evt {
-                    k if k == QUIT_KEY => return Ok(()),
-                    k if k == zzz1_KEY => vstate.selected_panel = keypress_evt.code.as_char().unwrap().to_digit(10).unwrap() as u8 - 1,
-                    k if k == zzz2_KEY => vstate.selected_panel = keypress_evt.code.as_char().unwrap().to_digit(10).unwrap() as u8 - 1,
-                    k if k == zzz3_KEY => vstate.selected_panel = keypress_evt.code.as_char().unwrap().to_digit(10).unwrap() as u8 - 1,
-                    k if k == zzz4_KEY => vstate.selected_panel = keypress_evt.code.as_char().unwrap().to_digit(10).unwrap() as u8 - 1,
-                    k if k.modifiers == KeyModifiers::NONE || k.modifiers == KeyModifiers::SHIFT => {
-                        if let KeyCode::Char(c) = k.code {
-                            vstate.pressed_key = Some(k.code);
-                        }
-                    },
+                if keypress_evt ==  QUIT_KEY { 
+                    return Ok(());
+                }
+                match keypress_evt.code {
+                    zzz1_KEY => vstate.selected_panel = keypress_evt.code.as_char().unwrap().to_digit(10).unwrap() as u8 - 1,
+                    zzz2_KEY => vstate.selected_panel = keypress_evt.code.as_char().unwrap().to_digit(10).unwrap() as u8 - 1,
+                    zzz3_KEY => vstate.selected_panel = keypress_evt.code.as_char().unwrap().to_digit(10).unwrap() as u8 - 1,
+                    zzz4_KEY => vstate.selected_panel = keypress_evt.code.as_char().unwrap().to_digit(10).unwrap() as u8 - 1,
+                    KeyCode::Char(c) => vstate.pressed_key = Some(keypress_evt.code),
                     _  => {}
                 }
             }
