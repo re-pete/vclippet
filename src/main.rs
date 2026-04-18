@@ -1,8 +1,9 @@
 #![allow(clippy::needless_return)]
 #![allow(clippy::vec_init_then_push)]
 // #![allow(clippy::needless_late_init)]
-// #![allow(unused_variables)]
+#![allow(unused_variables)]
 // #![allow(dead_code)]
+#![allow(warnings)]
 
 mod cli;
 mod clip;
