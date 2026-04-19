@@ -85,12 +85,16 @@ pub fn run() -> Result<(), Box<dyn Error>> {
         match read() {
             Ok(event::Event::Key(keypress_evt)) => {
                 if keypress_evt ==  QUIT_KEY { 
+                    ratatui::restore();
                     return Ok(());
                 }
                 match keypress_evt.code {
                     // This syntax makes no sense and I hate it. Oh and it's non inclusive for some
                     // reason too
-                    KeyCode::Char('1'..='4') => vstate.selected_panel = keypress_evt.code.as_char().unwrap().to_digit(10).unwrap() as u8 - 1,
+                    KeyCode::Char('1'..='4') => {
+                        vstate.selected_panel = keypress_evt.code.as_char().unwrap().to_digit(10).unwrap() as u8 - 1;
+                        vstate.pressed_key = None;
+                    },
                     KeyCode::Char(c) => vstate.pressed_key = Some(keypress_evt.code),
                     _  => {}
                 }
@@ -102,5 +106,4 @@ pub fn run() -> Result<(), Box<dyn Error>> {
             }
         }
     }
-
 }
